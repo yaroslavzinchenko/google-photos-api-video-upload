@@ -1,5 +1,5 @@
 # google-photos-api-video-upload
-Application that interacts with Google Photos Api, uploads all videos from certain directory and sorts them by albums according to the directory they are located.
+Application that interacts with Google Photos Api, uploads all videos from certain directory and sorts them by albums according to the directory they are located in.
 
 To make this application work, you need to put file named **client_secret.json** into the **public** folder.
 
