@@ -12,3 +12,8 @@ Example:
 ```
 define('BASE_DIR', 'My/Full/Path');
 ```
+
+The uploaded videos will be located in albums according to the directory they are located in.
+
+For example, if the **BASE_URL** defined as **'C:\MyFolder'**, and there is a video that has a path **'C:\MyFolder/Subfolder1/Subfolder2/MyVideo'**,
+the album name will be **'Subfolder1/Subfolder2'** and the video name will be **'MyVideo'**.
