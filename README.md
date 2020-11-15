@@ -22,7 +22,7 @@ npm install
 ```shell
 composer install
 ```
-Installs dependencies from composer.lock file, creates vendor folder.
+**composer install** installs dependencies from composer.lock file and creates vendor folder.
 
 The uploaded videos will be located in albums according to the directory they are located in.
 
