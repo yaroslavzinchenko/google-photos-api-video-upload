@@ -14,11 +14,10 @@ define('BASE_DIR', 'My/Full/Path');
 ```
 
 After cloning the repository to the local machine, run these two commands:
-This will install dependencies from package-lock.json file and create node_modules folder.
 ```shell
 npm install
 ```
-
+**npm install** will install dependencies from package-lock.json file and create node_modules folder.
 
 ```shell
 composer install
