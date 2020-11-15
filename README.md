@@ -9,7 +9,7 @@ For the reference check https://developers.google.com/photos/library/guides/over
 Also in the code define the constant **BASE_DIR**. This is the directory which you want to get scanned.
 
 Example:
-```
+```php
 define('BASE_DIR', 'My/Full/Path');
 ```
 
