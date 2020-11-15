@@ -13,6 +13,21 @@ Example:
 define('BASE_DIR', 'My/Full/Path');
 ```
 
+After cloning the repository to the local machine, run these two commands:
+```shell
+npm install
+```
+This will install dependencies from package-lock.json file and create node_modules folder.
+<br />
+<br />
+
+
+
+```shell
+composer install
+```
+Installs dependencies from composer.lock file, creates vendor folder.
+
 The uploaded videos will be located in albums according to the directory they are located in.
 
 For example, if the **BASE_URL** defined as **'C:\MyFolder'**, and there is a video that has a path **'C:\MyFolder/Subfolder1/Subfolder2/MyVideo'**,
