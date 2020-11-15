@@ -18,8 +18,6 @@ This will install dependencies from package-lock.json file and create node_modul
 ```shell
 npm install
 ```
-<br />
-<br />
 
 
 ```shell
