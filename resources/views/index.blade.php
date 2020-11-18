@@ -17,7 +17,7 @@
         @endif
 
         <br>
-        <a href="/authorize">Авторизоваться</a>
+        <a href="/auth">Авторизоваться</a>
         <br><br>
         <a href="/run">Запуск</a>
     </div>

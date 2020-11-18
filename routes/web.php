@@ -23,7 +23,7 @@ Route::get('/', [ApplicationController::class, 'index']);
 
 Route::get('/run', [ApplicationController::class, 'runApplication']);
 
-Route::get('/authorize', [AuthController::class, 'authorizeApplication']);
+Route::get('/auth', [AuthController::class, 'authorizeApplication']);
 
 Route::get('/redirect', [AuthController::class, 'redirect']);
 

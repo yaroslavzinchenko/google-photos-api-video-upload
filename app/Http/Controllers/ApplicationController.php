@@ -13,6 +13,7 @@ use Google\Photos\Library\V1\PhotosLibraryResourceFactory;
 use Google\Auth\OAuth2;
 
 session_start();
+header( 'Content-type: text/html; charset=utf-8' );
 
 class ApplicationController extends Controller
 {
@@ -78,12 +79,16 @@ class ApplicationController extends Controller
         {
             echo 'PhotosLibraryClient exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('PhotosLibraryClient exception: $e');</script>";
+            flush();
         }
         # Catch к методу listAlbums.
         catch (ApiException $e)
         {
             echo 'listAlbums exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('listAlbums exception: $e');</script>";
+            flush();
         }
 
         return $albums;
@@ -122,12 +127,16 @@ class ApplicationController extends Controller
         {
             echo 'PhotosLibraryClient exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('PhotosLibraryClient exception: $e');</script>";
+            flush();
         }
         # Catch к методу searchMediaItems.
         catch (\Google\ApiCore\ApiException $e)
         {
             echo 'searchMediaItems exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('searchMediaItems exception: $e');</script>";
+            flush();
         }
         finally
         {
@@ -140,6 +149,8 @@ class ApplicationController extends Controller
     public function scanDirectory($dir, $videos)
     {
         echo '<br>Сканирую <b><i>' . $dir . '</b></i><br>';
+        echo "<script>console.log('Сканирую $dir');</script>";
+        flush();
 
         # Получаем содержимое директории.
         $contents = scandir($dir);
@@ -159,6 +170,8 @@ class ApplicationController extends Controller
                 }
 
                 echo '<br><b>' . $dir . '/' . $elem . "</b> не директория.<br>";
+                echo "<script>console.log('$dir/$elem не директория.');</script>";
+                flush();
 
                 $videoAlreadyExists = false;
                 foreach($videos as $video)
@@ -170,6 +183,8 @@ class ApplicationController extends Controller
                     {
                         $videoAlreadyExists = true;
                         echo "Видео <b>" . $dir . '/' . $elem . "</b> уже есть. <br>";
+                        echo "<script>console.log('Видео$dir/$elem уже есть.');</script>";
+                        flush();
                         break;
                     }
                 }
@@ -196,6 +211,8 @@ class ApplicationController extends Controller
                     if ($albumExists)
                     {
                         echo "Альбом <b>$albumName</b> уже существует. <br>";
+                        echo "<script>console.log('Альбом $albumName уже существует.');</script>";
+                        flush();
                         $uploadResult = $this->uploadVideoToGooglePhotos($dir . '/' . $elem, $elem, $albumId);
                     }
                     else
@@ -204,6 +221,8 @@ class ApplicationController extends Controller
                         $albumName = ltrim($albumName, "/");
 
                         echo 'Альбома ' . $albumName . ' ещё нет. <br>';
+                        echo "<script>console.log('Альбома $albumName ещё нет.');</script>";
+                        flush();
                         $albumId = $this->addAlbum($albumName);
 
                         $uploadResult = $this->uploadVideoToGooglePhotos($dir . '/' . $elem, $elem, $albumId);
@@ -214,6 +233,8 @@ class ApplicationController extends Controller
             else
             {
                 echo '<br><b>' . $dir . '/' . $elem . '</b> является директорией. <br>';
+                echo "<script>console.log('$dir/$elem является директорией.');</script>";
+                flush();
                 $videos = $this->getVideos();
                 $this->scanDirectory($dir . '/' . $elem, $videos);
             }
@@ -236,11 +257,15 @@ class ApplicationController extends Controller
         {
             echo 'PhotosLibraryClient exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('PhotosLibraryClient exception: $e');</script>";
         }
     }
 
     public function uploadVideoToGooglePhotos($videoPath, $videoName, $albumId)
     {
+        echo "Начинается загрузка видео: " . $videoName . '<br>';
+        echo "<script>console.log('Начинается загрузка видео: $videoName');</script>";
+        flush();
         # Загрузка видео.
         # try-catch к new PhotosLibraryClient.
         try
@@ -248,30 +273,39 @@ class ApplicationController extends Controller
             $photosLibraryClient = new PhotosLibraryClient(['credentials' => $_SESSION['credentials']]);
 
             $mimeType = mime_content_type($videoPath);
-            echo "$mimeType<br>";
+            echo "mimeType: $mimeType<br>";
+            echo "<script>console.log('mimeType: $mimeType');</script>";
+            flush();
 
-            # Create a new upload request by opening the file and specifying the media type (e.g. "image/png")
+            # Create a new upload request by opening the file and specifying the media type (e.g. "image/png").
             $uploadToken = $photosLibraryClient->upload(file_get_contents($videoPath));
         }
         catch (\Google\ApiCore\ValidationException $e)
         {
             echo 'PhotosLibraryClient exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('PhotosLibraryClient exception: $e');</script>";
+            flush();
         }
         # catch к методу upload.
         catch (\GuzzleHttp\Exception\GuzzleException $e)
         {
-            echo 'upload exception: <br>';
+            echo 'Upload exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('Upload exception: $e');</script>";
+            flush();
         }
 
         if (!empty($uploadToken))
         {
             echo "Видео <b>$videoName</b> загружено. Создание медиа-элемента... <br>";
+            echo "<script>console.log('Видео $videoName загружено. Создание медиа-элемента...');</script>";
+            flush();
         }
         else
         {
             exit('Строка ' . __LINE__ . ': Ошибка при загрузке видео.');
+            flush();
         }
 
         # Создание медиа-элемента.
@@ -296,10 +330,15 @@ class ApplicationController extends Controller
                 {
                     # Error while creating the item.
                     echo "Ошибка при создании медиа-элемента.<br>";
+                    echo "<script>console.log('Ошибка при создании медиа-элемента.');</script>";
+                    flush();
                 }
                 else
                 {
                     echo "Media item is successfully created.<br>";
+                    echo "<script>console.log('Media item is successfully created.');</script>";
+                    flush();
+
                     # Media item is successfully created.
                     # Get the MediaItem object from the response.
                     $mediaItem = $itemResult->getMediaItem();
@@ -309,12 +348,13 @@ class ApplicationController extends Controller
                     # filename пустая скорее всего из-за того, что при загрузке мы не указывали имя файла,
                     # поэтому getFilename ничего не возвращает.
                     $filename = $mediaItem->getFilename();
-//                    echo '<br>';echo '<br>';echo "productUrl ";print_r($productUrl);echo '<br>';echo '<br>';echo '<br>';
 
                     $metadata = $mediaItem->getMediaMetadata();
                     if (!is_null($metadata))
                     {
                         echo "Metadata is not null.<br>";
+                        echo "<script>console.log('Metadata is not null.');</script>";
+                        flush();
                         # Несмотря на то, что videoMetadata is null, видео успешно загружается.
                         # Однако мы не можем проверить статус обработки видео.
                         $videoMetadata = $metadata->getVideo();
@@ -324,28 +364,40 @@ class ApplicationController extends Controller
                             if (VideoProcessingStatus::UNSPECIFIED == $videoMetadata->getStatus())
                             {
                                 echo "Video processing status is unknown.<br>";
+                                echo "<script>console.log('Video processing status is unknown.');</script>";
+                                flush();
                             }
                             else if (VideoProcessingStatus::PROCESSING == $videoMetadata->getStatus())
                             {
                                 echo "Video is being processed.<br>";
+                                echo "<script>console.log('Video is being processed.');</script>";
+                                flush();
                             }
                             else if (VideoProcessingStatus::READY == $videoMetadata->getStatus())
                             {
                                 echo "Video has been processed.<br>";
+                                echo "<script>console.log('Video has been processed.');</script>";
+                                flush();
                             }
                             else if (VideoProcessingStatus::FAILED == $videoMetadata->getStatus())
                             {
                                 echo "Something has gone wrong and the video has failed to process.<br>";
+                                echo "<script>console.log('Something has gone wrong and the video has failed to process.');</script>";
+                                flush();
                             }
                         }
                         else
                         {
                             echo "videoMetadata is null.<br>";
+                            echo "<script>console.log('videoMetadata is null.');</script>";
+                            flush();
                         }
                     }
                     else
                     {
                         echo "Metadata is null.<br>";
+                        echo "<script>console.log('Metadata is null.');</script>";
+                        flush();
                     }
 
 
@@ -358,13 +410,15 @@ class ApplicationController extends Controller
             # Handle error.
             echo 'batchCreateMediaItems exception: <br>';
             echo $e . '<br>';
+            echo "<script>console.log('batchCreateMediaItems exception: " . $e . "');</script>";
+            exit();
+            flush();
         }
     }
 
     # Логика приложения.
     public function runApplication()
     {
-        //define('BASE_DIR', 'C:\Users\AMD\Desktop\Test Folder');
         define('BASE_DIR', 'X:\Folder');
 
         $rootDir = BASE_DIR;
